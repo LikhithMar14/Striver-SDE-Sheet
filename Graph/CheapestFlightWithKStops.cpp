@@ -12,6 +12,7 @@ class Solution {
 public:
     int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
         // when we have equal increasing in values(when we compare steps) then there is no need to heap
+        //simple bfs with queue
         queue<pair<int,pair<int,int>>>q;
         q.push({0,{src,0}});
         // Converting 2d vector into graph
