@@ -59,10 +59,15 @@ public:
     }
 };
 
-//==========================================Sum of Subarray Minimums==========================================
+//==========================================Sum of Subarray Minimums==========================================\
+//https://leetcode.com/problems/sum-of-subarray-minimums/description/
+//================================IMPORTANT================================================
 
 
 //hmra fielding set hai yaha par
+
+//Take care of >= and > in left and right 
+//we are doing this to avoid double counting
 #define ll long long 
 class Solution {
 public:
@@ -110,5 +115,136 @@ public:
             sum = (sum + arr[i] * leftCont % MOD * rightCont % MOD) % MOD;
         }
         return static_cast<int>(sum);
+    }
+};
+
+
+//==========================================Sum of Subarray Ranges==========================================
+//https://leetcode.com/problems/sum-of-subarray-ranges/description/
+//================================IMPORTANT================================================
+
+
+
+#define ll long long 
+
+class Solution {
+public:
+    long long subArrayRanges(vector<int>& nums) {
+        // o(n) solution
+
+        //just think in terms of addition and subtraction
+
+        int n = nums.size();
+
+        stack<int>st;
+
+        //first find the left side greater range
+        //take care of > >= 
+        vector<int>leftMax(n,0);
+        vector<int>leftMin(n,0);
+        
+        for(int i=0; i < n; i++){
+            while(!st.empty() && nums[st.top()] <= nums[i]) st.pop();
+            if(st.empty()) leftMax[i] = -1;
+            else leftMax[i] = st.top();
+            st.push(i); 
+        }
+
+        while(!st.empty()) st.pop(); 
+
+        for(int i=0; i < n; i++){
+            while(!st.empty() && nums[st.top()] >= nums[i]) st.pop();
+            if(st.empty()) leftMin[i] = -1;
+            else leftMin[i] = st.top();
+            st.push(i); 
+        }
+
+        while(!st.empty()) st.pop(); 
+
+        vector<int>rightMax(n,0);
+        vector<int>rightMin(n,0);
+
+        for(int i=n-1; i >= 0; i--){
+            while(!st.empty() && nums[st.top()] < nums[i]) st.pop();
+            if(st.empty()) rightMax[i] = n;
+            else rightMax[i] = st.top();
+            st.push(i);
+        }
+
+        while(!st.empty()) st.pop(); 
+
+        for(int i=n-1; i >= 0; i--){
+            while(!st.empty() && nums[st.top()] > nums[i]) st.pop();
+            if(st.empty()) rightMin[i] = n;
+            else rightMin[i] = st.top();
+            st.push(i); 
+        }
+
+        ll result = 0;
+
+        for(int i=0; i < n; i++){
+            ll leftCountMax = i - leftMax[i];
+            ll rightCountMax = rightMax[i] - i;
+
+            ll leftCountMin = i - leftMin[i];
+            ll rightCountMin = rightMin[i] - i;
+
+            result += (ll)nums[i] * leftCountMax * rightCountMax;
+            result -= (ll)nums[i] * leftCountMin * rightCountMin;
+        }
+
+        return result;
+    }
+};
+
+
+//==========================================Remove K Digits==========================================
+//https://leetcode.com/problems/remove-k-digits/description/
+//================================IMPORTANT================================================
+
+
+
+class Solution {
+public:
+    string removeKdigits(string num, int k) {
+        int n = num.size();
+        stack<int>st;
+        string ans = "";
+
+        // A very good question of monotonic stack where you can clearly feel
+
+        for(int i = 0; i < n; i++) {
+            while(k > 0 && !st.empty() && st.top() > (num[i] - '0')) {
+                st.pop();
+                k--;
+            }
+            st.push((num[i] - '0'));
+        }
+
+        while(k > 0 && !st.empty()) {
+            st.pop();
+            k--;
+        }
+
+        while(st.size()) {
+            ans += (char)(st.top() + '0');
+            st.pop();
+        }
+
+        reverse(ans.begin(), ans.end());
+
+        int i = 0;
+        while(i < ans.size()) {
+            if(ans[i] != '0') break;
+            i++;
+        }
+
+
+        string res = ans.substr(i);
+        
+
+        if(res.empty() || k > 0) res = "0";
+
+        return res;
     }
 };
