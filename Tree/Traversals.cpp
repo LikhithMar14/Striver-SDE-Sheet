@@ -95,8 +95,62 @@ public:
 
     }
 };
+// Traversal using stack (Preorder)
 
 
+class Solution {
+public:
+    vector<int>res;
+    void solve(stack<TreeNode*>recursiveStack){
+        while(!recursiveStack.empty()){
+            TreeNode* topElement = recursiveStack.top();
+            recursiveStack.pop();
+            if(!topElement)continue;
+            res.push_back(topElement->val);
+            //Important
+            if(topElement->right)recursiveStack.push(topElement->right);
+            if(topElement->left)recursiveStack.push(topElement->left);
 
+        }
+    }
+    vector<int> preorderTraversal(TreeNode* root) {
+        stack<TreeNode*>recursiveStack;
+        recursiveStack.push(root);
+        solve(recursiveStack);
+        return res;
+    }
+};
+
+
+// Traversal using stack (Inorder)
+
+class Solution {
+public:
+    vector<int>res;
+    void solve(stack<TreeNode*>recursiveStack,TreeNode* root){
+        TreeNode* node = root;
+        while(true){
+            if(node){
+                recursiveStack.push(node);
+                node = node->left;
+            }
+            else{
+                //means there are no elements to traverse we taravesd entire thing
+                if(recursiveStack.empty())break;
+                node = recursiveStack.top();
+                recursiveStack.pop();
+                res.push_back(node->val);
+                node = node->right;
+            }
+
+        }
+
+    }
+    vector<int> inorderTraversal(TreeNode* root) {
+        stack<TreeNode*>recursiveStack;
+        solve(recursiveStack,root);
+        return res;
+    }
+};
 
 
