@@ -51,3 +51,55 @@ class Solution {
 
 
 
+
+//Frong jump with k distance
+class Solution {
+public:
+    int frogJump(vector<int>& heights, int k) {
+        int n = heights.size();
+        vector<int>dp(n+2,0);
+        // vector<vector<int>>dp(n+2,vector<int>(k+2,0));
+        for(int i=n-2; i >= 0; i--){
+            int mini = INT_MAX;
+            for(int j=1; j <= k; j++){
+                if(i+j < n){
+                    mini = min(mini,(abs(heights[i]-heights[i+j])+dp[i+j]));
+                }
+            }
+            dp[i] = mini;
+        }
+        return dp[0];
+    }
+};
+
+
+//House Robber-II
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        //state dp[i] => 
+        //Restrictions: you cannot choose ii+1
+        //maxiumum things i can loot from this point
+        //i can start from 0th index or 1st  and choose max
+        //dp[i] = max(maxi,dp[i+j]+heights[i]);
+        //we will have two rounds on from 0 to n-2, 1 to n-1
+        int n = nums.size();
+        //edge case 
+        if(n == 1)return nums[0];
+
+        //you can chose the next one and the current one with the best of next next one
+
+        vector<int>dp1(n+3,0),dp2(n+3,0);
+
+        for(int i=n-2; i >= 0; i--){
+            dp1[i] = max(dp1[i+1],dp1[i+2]+nums[i]);
+        }
+        for(int i=n-1; i >= 1; i--){
+            dp2[i] = max(dp2[i+1],dp2[i+2]+nums[i]);
+        }
+
+        return max(dp1[0],dp2[1]);
+
+
+    }
+};
