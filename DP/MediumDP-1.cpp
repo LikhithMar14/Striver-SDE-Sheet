@@ -99,3 +99,73 @@ public:
 
     }
 };
+
+
+//Minimum Faliing path sum
+
+
+
+class Solution {
+public:
+    int minFallingPathSum(vector<vector<int>>& matrix) {
+        //top to down makes more sensse
+        int n = matrix.size();
+
+        vector<vector<int>>dp(n,vector<int>(n,0));
+        
+        for(int i=0; i < n; i++)dp[0][i] = matrix[0][i];
+
+        for(int i=1; i < n; i++){
+            for(int j=0; j < n; j++){
+                int up = ((i-1) < 0) ? INT_MAX: dp[i-1][j];
+                int upLeft = ((i-1) < 0 || (j-1) < 0) ? INT_MAX : dp[i-1][j-1];
+                int upRight = ((i-1) < 0 || (j+1) >= n) ? INT_MAX : dp[i-1][j+1];
+
+                dp[i][j] = matrix[i][j]+min({up,upLeft,upRight});
+
+            }
+        }
+        return *min_element(dp[n-1].begin(),dp[n-1].end());
+    }
+};
+
+//Ninjas Traning 
+
+#include<bits/stdc++.h>
+using namespace std;
+int ninjaTraining(int n, vector<vector<int>> &points)
+{
+    // Write your code here.
+    //at every you have two options other than the previous option
+    //what will be the paramerts
+    //the defination of the state => the maxium number of points i can earn 
+    //from the day to end by choosing which option
+    //Golden Rule To Decide the State: Your DP state must capture 
+    // all the information needed to make a decision at the current step.
+
+    vector<vector<int>>dp(n+2,vector<int>(5,0));
+
+    //state the maxiumu i can reach from this i to the end
+    //dp[i][0->3-{prev}] = max()
+
+    //setting the basecase
+    dp[0][0] = max(points[0][1],points[0][2]);
+    dp[0][1] = max(points[0][0],points[0][2]);
+    dp[0][2] = max(points[0][0],points[0][1]);
+    
+
+    for(int i=1; i < n; i++){
+        for(int prevTask=0; prevTask < 3; prevTask++){
+            int maxi = 0;
+            for(int task=0; task < 3; task++){
+                if(task != prevTask){
+                    maxi = max(maxi,points[i][task]+dp[i-1][task]);
+                }
+            }
+            dp[i][prevTask] = maxi;
+        }
+    }
+    return *max_element(dp[n-1].begin(),dp[n-1].end());
+
+
+}
