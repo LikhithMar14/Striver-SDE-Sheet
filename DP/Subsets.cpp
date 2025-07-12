@@ -50,3 +50,31 @@ public:
 
     }
 };
+
+//parttion equal subset
+
+class Solution {
+public:
+    bool canPartition(vector<int>& nums) {
+        int sum = accumulate(nums.begin(),nums.end(),0);
+        if(sum&1)return false;
+
+        //teh whole objective of us is to find atleast one way os that we can reach the
+        //target of sum/2 from 0 to n-1;
+
+        //the intgers are positive no change of getting anegatvei num
+
+        int w = sum/2+2;
+        int n = nums.size();
+
+        vector<vector<int>>dp(n+2,vector<int>(w+2,0));
+        dp[n][0] = 1;
+
+        for(int i=n-1; i >= 0; i--){
+            for(int j=sum/2; j >= 0; j--){
+                dp[i][j] = (((j >= nums[i]) ? dp[i+1][j-nums[i]]:0) || dp[i+1][j]);
+            }
+        }
+        return dp[0][sum/2];
+    }
+};
