@@ -169,3 +169,166 @@ int ninjaTraining(int n, vector<vector<int>> &points)
 
 
 }
+
+//Coin Change
+
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        //state dp[amout][numeration]
+        //from n-1 to 0
+        //min(dp[0][0->allnumerations])
+        //checek outof bounds alos
+        //transition dp[i][j] = 1+dp[i-coins[j]][j]
+
+        int n = coins.size();
+        int m = amount + 1;
+        
+        vector<vector<int>> dp(m, vector<int>(n + 1, 1e9)); 
+
+        //base case
+        for (int j = 0; j <= n; j++) {
+            dp[0][j] = 0;
+        }
+
+        for (int i = 1; i < m; i++) {
+            for (int j = n - 1; j >= 0; j--) {
+                int skip = dp[i][j + 1];
+                int take = 1e9;
+                if (i - coins[j] >= 0) {
+                    take = 1 + dp[i - coins[j]][j];
+                }
+                dp[i][j] = min(skip, take);
+            }
+        }
+
+        return dp[amount][0] >= 1e9 ? -1 : dp[amount][0];
+    }
+};
+
+//Perfect Sum Problem 
+
+
+class Solution {
+public:
+    int perfectSum(vector<int>& arr, int target) {
+        int n = arr.size();
+        int mod = 1e9 + 7;
+
+        vector<vector<int>> dp(n + 1, vector<int>(target + 1, 0));
+        
+        //base case
+        for (int i = 0; i <= n; i++) {
+            dp[i][0] = 1;
+        }
+        
+        //state dp[index][target] (the numbher of ways that i can reach from index to n to acheive the target )
+        //base dp[index can be anything][target =0] = 1
+        //transition dp[index][target] =
+        //     dp[index+1][target]
+        //          +
+        //     dp[index+1][target-arr[index]] (also do validation check)
+
+        for (int i = n - 1; i >= 0; i--) {
+            for (int t = 0; t <= target; t++) {
+                int notTake = dp[i + 1][t];
+                int take = 0;
+                if (t >= arr[i]) {
+                    take = dp[i + 1][t - arr[i]];
+                }
+                dp[i][t] = (notTake + take) % mod;
+            }
+        }
+
+        return dp[0][target];
+    }
+};
+
+//Partitions with given differencce
+
+class Solution {
+  public:
+    int countPartitions(vector<int>& arr, int d) {
+        //Calculate the total sum
+        int totalSum = accumulate(arr.begin(), arr.end(), 0);
+        //currSum = (remSum)+d;
+        //currSum = (totalSum-currSum)+d;
+        //curSum = (totalSum+d)/2
+        
+        if((totalSum + d) & 1) return 0;
+        
+        int target = (totalSum + d) >> 1;
+        
+        int n = arr.size();
+        vector<vector<int>> dp(n + 1, vector<int>(target + 1, 0));
+
+
+        for(int i = 0; i <= n; i++) {
+            dp[i][0] = 1;
+        }
+        
+        for(int i = n - 1; i >= 0; i--) {
+            for(int j = 0; j <= target; j++) {
+                int take = 0;
+                if(arr[i] <= j) {
+                    take = dp[i + 1][j - arr[i]];
+                }
+                int notTake = dp[i + 1][j];
+                dp[i][j] = take + notTake;
+            }
+        }
+        
+        return dp[0][target];
+    }
+};
+
+//Coin Change 2
+
+#define ll unsigned long long
+class Solution {
+public:
+    int change(int amount, vector<int>& coins) {
+        ll n = coins.size();
+        int MOD = 1e9 + 7;
+        vector<vector<ll>>dp(n+2,vector<ll>(amount+2,0));
+        for(ll i=0; i <= n; i++) dp[i][0] = 1;
+
+        for(ll i=n-1; i >= 0; i--){
+            for(ll j=0; j <= amount; j++){
+                ll skip = dp[i+1][j] % MOD;
+                ll take = 0;
+                if(j >= coins[i]){
+                    take = dp[i][j - coins[i]] % MOD;
+                }
+                dp[i][j] = (skip + take) % MOD;
+            }
+        }
+        return (int)dp[0][amount];
+    }
+};
+
+//KnapSack with duplicate items
+
+
+class Solution {
+public:
+    int knapSack(vector<int>& val, vector<int>& wt,int capacity) {
+        int n = wt.size();
+        vector<vector<int>> dp(n + 1, vector<int>(capacity + 1, 0));
+
+        for (int i = n - 1; i >= 0; i--) {
+            for (int cap = 0; cap <= capacity; cap++) {
+                int notTake = dp[i + 1][cap];
+
+                int take = 0;
+                if (cap >= wt[i]) {
+                    take = val[i] + dp[i][cap - wt[i]];  
+                }
+
+                dp[i][cap] = max(take, notTake);
+            }
+        }
+
+        return dp[0][capacity];
+    }
+};
