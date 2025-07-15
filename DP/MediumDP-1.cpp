@@ -332,3 +332,30 @@ public:
         return dp[0][capacity];
     }
 };
+
+
+//CutRod
+
+class Solution {
+public:
+    int cutRod(vector<int> &price) {
+        int n = price.size();
+        vector<vector<int>> dp(n + 1, vector<int>(n + 1, 0));
+
+        for (int i = n - 1; i >= 0; i--) {
+            for (int length = 1; length <= n; length++) {
+                int notTake = dp[i + 1][length];
+                int take = 0;
+                int rodLength = i + 1;
+
+                if (length >= rodLength) {
+                    take = price[i] + dp[i][length - rodLength];
+                }
+
+                dp[i][length] = max(take, notTake);
+            }
+        }
+
+        return dp[0][n];
+    }
+};
