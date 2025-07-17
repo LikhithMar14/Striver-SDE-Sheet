@@ -85,3 +85,81 @@ public:
         return ans;
     }
 };
+
+//Longest String chain
+
+class Solution {
+public:
+    bool areValid(string &a, string &b){
+        int n = a.size();
+        int m = b.size();
+        if(m != n + 1) return false;
+
+        int i=0;
+        int j=0;
+        int gap = 0;
+
+        while(i < n && j < m){
+            if(a[i] == b[j]){
+                i++;
+                j++;
+            }else{
+                gap++;
+                if(gap > 1)return false;
+                j++;
+                if(j >= m)break;
+            }
+        }
+        return true;
+    }
+    int longestStrChain(vector<string>& words) {
+        int n = words.size();
+        
+        vector<int>dp(n+1,1);
+        sort(words.begin(),words.end(),[](string &a, string &b){
+            return a.size() < b.size();
+        });
+        for(int i=n-1; i >= 0; i--){
+            for(int j=i+1; j  < n; j++){
+                if(areValid(words[i],words[j])){
+                    dp[i] = max(1+dp[j],dp[i]);
+                }
+            }
+        }
+        return *max_element(dp.begin(),dp.end());
+    }
+};
+
+//Longest bitonic sequcne
+
+class Solution {
+public:
+    int LongestBitonicSequence(int n, vector<int> &nums) {
+        vector<int> left(n, 1);
+        vector<int> right(n, 1);
+
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < i; j++) {
+                if(nums[i] > nums[j]) {
+                    left[i] = max(left[i], 1 + left[j]);
+                }
+            }
+        }
+
+        for(int i = n-1; i >= 0; i--) {
+            for(int j = i+1; j < n; j++) {
+                if(nums[i] > nums[j]) {
+                    right[i] = max(right[i], 1 + right[j]);
+                }
+            }
+        }
+
+        int maxi = 0;
+        for(int i = 0; i < n; i++) {
+            if(left[i] > 1 && right[i] > 1) {
+                maxi = max(maxi, left[i] + right[i] - 1);
+            }
+        }
+        return maxi;
+    }
+};
