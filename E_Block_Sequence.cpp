@@ -25,10 +25,9 @@ void solve(){
                 pick += dp[i+1+arr[i]];
             }
         }
-        int skip = 0;
-        if(i+1 < n){
-            skip += dp[i+1];
-        }
+
+        int skip += dp[i+1];
+        
         dp[i] = max(pick,skip);
     }
     cout<<n-dp[0]<<endl;
