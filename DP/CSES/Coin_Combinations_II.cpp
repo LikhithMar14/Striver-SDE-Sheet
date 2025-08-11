@@ -29,7 +29,7 @@ int main(){
             if(j-arr[i] >= 0){
                 pick = dp[i][j-arr[i]];
             }
-            dp[i][j] = (skip+pick)%mod;
+            dp[i][j] = (skip+pick)%mod; 
         }
     }
     cout<<dp[0][k]<<endl;
